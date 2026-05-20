@@ -58,7 +58,7 @@ jobs:
           pip install -r shipments-svc/requirements.txt
 
       - name: Run pytest
-        run: pytest weeks/week-17/tests/ -v
+        run: pytest tests/ -v
 
   build:
     name: Build Docker Images
