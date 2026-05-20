@@ -1,0 +1,40 @@
+replicaCount: 2
+
+shipments:
+  name: shipments-svc-s01
+  port: 8130
+  image:
+    repository: shipments-s01
+    tag: "latest"
+    pullPolicy: IfNotPresent
+
+notifications:
+  name: notifications-svc-s01
+  port: 8131
+  image:
+    repository: notifications-s01
+    tag: "latest"
+    pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "100m"
+  limits:
+    memory: "128Mi"
+    cpu: "250m"
+
+env:
+  GROUP: "431"
+  STUDENT_ID: "s01"
+  PROJECT_CODE: "shipments-s01"
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false

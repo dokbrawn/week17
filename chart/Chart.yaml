@@ -1,0 +1,12 @@
+apiVersion: v2
+name: shipments-chart
+description: Helm chart for shipments-s01
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - shipments
+  - microservice
+maintainers:
+  - name: s01
+    email: s01@students.com

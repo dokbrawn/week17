@@ -1,0 +1,42 @@
+#! gateway-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: gateway
+    namespace: week-17
+    labels:
+        com.docker.compose.project: week-17
+        com.docker.compose.service: gateway
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: week-17
+            com.docker.compose.service: gateway
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: week-17
+                com.docker.compose.service: gateway
+                com.docker.compose.network.shipments-network: "true"
+        spec:
+            restartPolicy: unless-stopped
+            containers:
+                - name: shipments-gateway
+                  image: nginx:alpine
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                    - name: gateway-80
+                      containerPort: 80
+                  volumeMounts:
+                    - name: etc-nginx-nginx-conf
+                      mountPath: /etc/nginx/nginx.conf
+                      readOnly: true
+            volumes:
+                - name: etc-nginx-nginx-conf
+                  hostPath:
+                    path: C:\Users\tanis\Documents\distrib_systems_tasks\weeks\week-17\nginx\nginx.conf
+                  readOnly: true

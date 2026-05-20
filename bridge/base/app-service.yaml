@@ -1,0 +1,23 @@
+# check if there is at least one published port
+
+#! app-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: app-published
+    namespace: week-17
+    labels:
+        com.docker.compose.project: week-17
+        com.docker.compose.service: app
+spec:
+    selector:
+        com.docker.compose.project: week-17
+        com.docker.compose.service: app
+    ports:
+        - name: app-8130
+          port: 8130
+          protocol: TCP
+          targetPort: app-8130
+
+# check if there is at least one published port

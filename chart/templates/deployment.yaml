@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.shipments.name }}
+  labels:
+    app: {{ .Values.shipments.name }}
+    project: {{ .Values.env.PROJECT_CODE }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.shipments.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.shipments.name }}
+        project: {{ .Values.env.PROJECT_CODE }}
+    spec:
+      containers:
+        - name: shipments-container
+          image: "{{ .Values.shipments.image.repository }}:{{ .Values.shipments.image.tag }}"
+          imagePullPolicy: {{ .Values.shipments.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.shipments.port }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}

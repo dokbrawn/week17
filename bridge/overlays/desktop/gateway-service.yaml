@@ -1,0 +1,9 @@
+#! gateway-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: gateway-published
+    namespace: week-17
+spec:
+    type: LoadBalancer

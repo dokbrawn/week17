@@ -1,0 +1,19 @@
+#! gateway-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: gateway-published
+    namespace: week-17
+    labels:
+        com.docker.compose.project: week-17
+        com.docker.compose.service: gateway
+spec:
+    selector:
+        com.docker.compose.project: week-17
+        com.docker.compose.service: gateway
+    ports:
+        - name: gateway-8081
+          port: 8081
+          protocol: TCP
+          targetPort: gateway-80

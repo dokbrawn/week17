@@ -1,0 +1,110 @@
+name: CI/CD Pipeline - shipments-s01
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: tanis/shipments-s01
+  PROJECT_CODE: shipments-s01
+  GROUP: "431"
+  STUDENT_ID: "s01"
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pylint
+
+      - name: Run flake8
+        run: flake8 shipments-svc/app/ --count --select=E9,F63,F7,F82
+
+      - name: Run pylint
+        run: pylint shipments-svc/app/ --exit-zero || true
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install pytest
+          pip install -r shipments-svc/requirements.txt
+
+      - name: Run pytest
+        run: pytest weeks/week-17/tests/ -v
+
+  build:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build shipments-svc
+        uses: docker/build-push-action@v5
+        with:
+          context: ./shipments-svc
+          push: false
+          tags: ${{ env.IMAGE_NAME }}:latest
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
+
+      - name: Build notifications-svc
+        uses: docker/build-push-action@v5
+        with:
+          context: ./notifications-svc
+          push: false
+          tags: ${{ env.IMAGE_NAME }}-notifications:latest
+
+  publish:
+    name: Publish Artifacts
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-${{ github.sha }}
+          path: |
+            docker-compose.yml
+            chart/

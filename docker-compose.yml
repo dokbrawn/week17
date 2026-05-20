@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  shipments-svc:
+    build:
+      context: ./shipments-svc
+      dockerfile: Dockerfile
+    container_name: shipments-svc-s01
+    environment:
+      - GROUP=431
+      - STUDENT_ID=s01
+      - PROJECT_CODE=shipments-s01
+      - NOTIFICATIONS_URL=http://notifications-svc:8131
+    ports:
+      - "8130:8130"
+    networks:
+      - shipments-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8130/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    depends_on:
+      - notifications-svc
+
+  notifications-svc:
+    build:
+      context: ./notifications-svc
+      dockerfile: Dockerfile
+    container_name: notifications-svc-s01
+    environment:
+      - GROUP=431
+      - STUDENT_ID=s01
+      - PROJECT_CODE=shipments-s01
+    ports:
+      - "8131:8131"
+    networks:
+      - shipments-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8131/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  gateway:
+    image: nginx:alpine
+    container_name: shipments-gateway
+    ports:
+      - "8085:80"
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - shipments-network
+    depends_on:
+      shipments-svc:
+        condition: service_healthy
+      notifications-svc:
+        condition: service_healthy
+    restart: unless-stopped
+
+networks:
+  shipments-network:
+    driver: bridge

@@ -1,0 +1,8 @@
+#! 0-week-17-namespace.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: week-17
+    labels:
+        com.docker.compose.project: week-17

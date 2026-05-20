@@ -1,0 +1,13 @@
+#! kustomization.yaml
+# Generated code, do not edit
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+    - 0-week-17-namespace.yaml
+    - app-deployment.yaml
+    - app-expose.yaml
+    - app-service.yaml
+    - gateway-deployment.yaml
+    - gateway-expose.yaml
+    - gateway-service.yaml
+    - shipments-network-network-policy.yaml
