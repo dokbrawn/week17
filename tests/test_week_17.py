@@ -2,9 +2,9 @@ from pathlib import Path
 from coursekit.koan import need
 from coursekit.variant import load_variant
 
-ROOT = Path(__file__).resolve().parents[3]
-ARCH = ROOT / 'weeks' / 'week-17' / 'ARCHITECTURE.md'
 
+ROOT = Path(__file__).resolve().parents[1]
+ARCH = ROOT / 'ARCHITECTURE.md'
 
 def test_capstone_arch():
     need(ARCH.exists(), f"Создайте ARCHITECTURE.md: {ARCH}")
