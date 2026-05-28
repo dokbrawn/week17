@@ -212,12 +212,12 @@ docker-compose up -d --scale shipments-svc=3
 
 # Обновить образ через Helm
 helm upgrade shipments-s01 ./chart \
-  --set shipments.image.tag=v2.0.0 \
+  --set shipments.image.tag=vX.X.X \
   --set replicaCount=3
 
 
 **Как это работает:**
-1. K8s создаёт новый под с версией v2.0.0
+1. K8s создаёт новый под с версией vX.X.X
 2. Ждёт, пока новый под перейдёт в `Ready` (passes readinessProbe)
 3. Удаляет один старый под с версией v1.0.0
 4. Повторяет шаги 1-3, пока все поды не обновятся
