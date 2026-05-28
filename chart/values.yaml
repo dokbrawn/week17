@@ -4,8 +4,8 @@ shipments:
   name: shipments-svc-s01
   port: 8130
   image:
-    repository: shipments-s01
-    tag: "latest"
+    repository: week17-shipments-svc
+    tag: latest
     pullPolicy: IfNotPresent
 
 notifications:
